@@ -145,23 +145,35 @@ export async function fetchMediaDetails(
   const data = await fetchWithFallBack(`/${type}/${id}`, {
     language,
     append_to_response: 'videos,credits,recommendations,similar',
+    include_video_language: 'en,null,ar',
   })
+
+  let rawVideos = Array.isArray(data.videos)
+    ? data.videos
+    : data.videos?.results || []
 
   if (
     language.startsWith('ar') &&
-    (!data.overview?.trim() || !data.tagline?.trim())
+    (!data.overview?.trim() ||
+      !data.tagline?.trim() ||
+      rawVideos.length === 0)
   ) {
     try {
       const enData = await apiFetch(`/${type}/${id}`, {
         language: 'en-US',
         append_to_response: 'videos,credits,recommendations,similar',
+        include_video_language: 'en,null',
       })
       if (!data.overview?.trim()) data.overview = enData.overview || ''
       if (!data.tagline?.trim()) data.tagline = enData.tagline || ''
+      if (rawVideos.length === 0 && enData.videos?.results?.length) {
+        rawVideos = enData.videos.results
+      }
     } catch (err) {
       console.warn('English details fallback has failed:', err)
     }
   }
+
+  data.videos = rawVideos
   return data
 }
-

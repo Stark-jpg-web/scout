@@ -141,8 +141,17 @@ function MediaDetailsPage() {
         ? media.similar.results
         : []
 
-  const hasTrailer = media.videos?.results?.some(
-    (v) => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
+  const videoList = Array.isArray(media.videos)
+    ? media.videos
+    : media.videos?.results || []
+
+  const hasTrailer = videoList.some(
+    (v) =>
+      v.site === 'YouTube' &&
+      (v.type === 'Trailer' ||
+        v.type === 'Teaser' ||
+        v.name?.toLowerCase().includes('trailer') ||
+        v.name?.toLowerCase().includes('teaser'))
   )
 
   return (
@@ -399,7 +408,7 @@ function MediaDetailsPage() {
       <VideoModal
         isOpen={isTrailerOpen}
         onClose={() => setTrailerOpen(false)}
-        videos={media.videos?.results || []}
+        videos={media?.videos || []}
         title={title}
       />
     </div>

@@ -1,16 +1,33 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
-function VideoModal({ isOpen, onClose, videos = [],title }) {
+function VideoModal({ isOpen, onClose, videos = [], title }) {
   const { t } = useTranslation()
 
-  const trailer = videos?.find(
-    (v) =>
-      (v.site === 'YouTube' && v.type === 'Trailer' && v.official) ||
-      (v.site === 'YouTube' && v.type === 'Trailer') ||
-      (v.site === 'YouTube' && v.type === 'Teaser')
-  )
-  
+  const videoList = Array.isArray(videos) ? videos : videos?.results || []
+
+  // Prioritized trailer search:
+  // 1. Official Trailer name or Trailer type
+  // 2. Name includes "Trailer"
+  // 3. Name includes "Teaser" or Teaser type
+  // 4. Any YouTube video fallback
+  const trailer =
+    videoList.find(
+      (v) =>
+        v.site === 'YouTube' &&
+        (v.name?.toLowerCase() === 'official trailer' ||
+          (v.type === 'Trailer' && v.official) ||
+          v.type === 'Trailer')
+    ) ||
+    videoList.find(
+      (v) => v.site === 'YouTube' && v.name?.toLowerCase().includes('trailer')
+    ) ||
+    videoList.find(
+      (v) =>
+        v.site === 'YouTube' &&
+        (v.name?.toLowerCase().includes('teaser') || v.type === 'Teaser')
+    ) ||
+    videoList.find((v) => v.site === 'YouTube')
 
   useEffect(() => {
     if (!isOpen) return
@@ -28,8 +45,8 @@ function VideoModal({ isOpen, onClose, videos = [],title }) {
 
   if (!isOpen) return null
 
-  const youtubeKey=trailer?.key
-
+  const youtubeKey = trailer?.key
+  console.log('YoutubeKey:', youtubeKey)
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in"
@@ -60,7 +77,9 @@ function VideoModal({ isOpen, onClose, videos = [],title }) {
           <div className="aspect-video rounded-xl overflow-hidden bg-black border border-border/30 shadow-inner">
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${youtubeKey}?autoplay=1&rel=0`}
-              title={trailer?.name || t('media.trailer', { defaultValue: 'Trailer' })}
+              title={
+                trailer?.name || t('media.trailer', { defaultValue: 'Trailer' })
+              }
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               referrerPolicy="strict-origin-when-cross-origin"
@@ -69,7 +88,9 @@ function VideoModal({ isOpen, onClose, videos = [],title }) {
           </div>
         ) : (
           <div className="aspect-video rounded-xl overflow-hidden bg-black/60 border border-border/30 flex items-center justify-center">
-            <p className="text-muted text-sm">{t('media.noTrailer', { defaultValue: 'No trailer available' })}</p>
+            <p className="text-muted text-sm">
+              {t('media.noTrailer', { defaultValue: 'No trailer available' })}
+            </p>
           </div>
         )}
       </div>
