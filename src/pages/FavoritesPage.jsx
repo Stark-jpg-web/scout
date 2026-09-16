@@ -7,6 +7,8 @@ import CollectionFilterToolbar from '../components/library/CollectionFilterToolb
 import useStore from '../store/useStore.js'
 import { CURATED_GENRES } from '../utils/constants.js'
 import { FaHeart } from 'react-icons/fa'
+import { useHydratedLibrary } from '../hooks/useLibrary.js'
+
 function FavoritesPage() {
   const { t } = useTranslation()
 
@@ -16,11 +18,12 @@ function FavoritesPage() {
   const [sortByGenre, setSortByGenre] = useState('all')
 
   const favorites = useStore((state) => state.favorites)
-  const allFavoritesItems = Object.values(favorites || {})
+  const allFavoritesItems = useMemo(() => Object.values(favorites || {}), [favorites])
+  const hydratedFavorites = useHydratedLibrary(allFavoritesItems)
 
   const filteredFavorites = useMemo(() => {
     // 1. Convert dictionary to array
-    let list = Object.values(favorites || {})
+    let list = [...hydratedFavorites]
     // 2. Filter by Media Type ('all' | 'movie' | 'tv')
     if (mediaType !== 'all') {
       list = list.filter((item) => item.media_type === mediaType)
@@ -77,7 +80,7 @@ function FavoritesPage() {
           return (b.addedAt || 0) - (a.addedAt || 0)
       }
     })
-  }, [favorites, mediaType, searchQuery, sortBy, sortByGenre])
+  }, [hydratedFavorites, mediaType, searchQuery, sortBy, sortByGenre])
   const isFavoritesEmpty = allFavoritesItems.length === 0
   const isFilteredEmpty = !isFavoritesEmpty && filteredFavorites.length === 0
 

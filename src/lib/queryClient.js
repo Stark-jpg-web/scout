@@ -7,11 +7,11 @@ export const queryClient = new QueryClient({
 
       if (error?.status) {
         const messageByStatus = {
-          401: 'TMDB authorization failed. Check your API Read Access Token.',
-          404: 'The requested TMDB resource was not found.',
-          429: 'TMDB rate limit reached. Please try again shortly.',
+          401: ' authorization failed. Check your API Read Access Token.',
+          404: 'The requested  resource was not found.',
+          429: ' rate limit reached. Please try again shortly.',
         }
-        const message = messageByStatus[error.status] ?? 'Unknown TMDB error.'
+        const message = messageByStatus[error.status] ?? 'Unknown API error.'
         console.warn(message)
       }
     },

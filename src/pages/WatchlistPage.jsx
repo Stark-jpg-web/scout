@@ -7,6 +7,7 @@ import CollectionFilterToolbar from '../components/library/CollectionFilterToolb
 import useStore from '../store/useStore.js'
 import { CURATED_GENRES } from '../utils/constants.js'
 import { CiCircleList } from 'react-icons/ci'
+import { useHydratedLibrary } from '../hooks/useLibrary.js'
 
 function WatchlistPage() {
   const { t } = useTranslation()
@@ -17,11 +18,12 @@ function WatchlistPage() {
   const [sortByGenre, setSortByGenre] = useState('all')
 
   const watchlist = useStore((state) => state.watchlist)
-  const allWatchlistItems = Object.values(watchlist || {})
+  const allWatchlistItems = useMemo(() => Object.values(watchlist || {}), [watchlist])
+  const hydratedWatchlist = useHydratedLibrary(allWatchlistItems)
 
   const filteredWatchlist = useMemo(() => {
     // 1. Convert dictionary to array
-    let list = Object.values(watchlist || {})
+    let list = [...hydratedWatchlist]
     // 2. Filter by Media Type ('all' | 'movie' | 'tv')
     if (mediaType !== 'all') {
       list = list.filter((item) => item.media_type === mediaType)
@@ -78,7 +80,7 @@ function WatchlistPage() {
           return (b.addedAt || 0) - (a.addedAt || 0)
       }
     })
-  }, [watchlist, mediaType, searchQuery, sortBy, sortByGenre])
+  }, [hydratedWatchlist, mediaType, searchQuery, sortBy, sortByGenre])
   const isWatchlistEmpty = allWatchlistItems.length === 0
   const isFilteredEmpty = !isWatchlistEmpty && filteredWatchlist.length === 0
 
