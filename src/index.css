@@ -112,3 +112,7 @@ select {
 .carousel-btn {
   @apply bg-surface rounded-md border border-border ring-1 ring-primary/60 shadow-md px-0.5 py-1 md:px-1 md:py-2 hover:ring-primary hover:scale-110;
 }
+.media-card {
+  content-visibility: auto;
+  contain-intrinsic-size: 200px 300px;
+}

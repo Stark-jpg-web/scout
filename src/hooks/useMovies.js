@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery,useInfiniteQuery } from '@tanstack/react-query'
+
 import {
   fetchTrending,
   fetchTopRated,
@@ -130,6 +131,41 @@ export function useMediaDetails(type = 'movie', id) {
     queryKey: mediaKeys.detail(type, id, language),
     queryFn: () => fetchMediaDetails(type, id, language),
     enabled: Boolean(id),
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useInfiniteCategory(type = 'movie', category = 'popular', genreId = null) {
+  const language = useCurrentLanguage()
+  return useInfiniteQuery({
+    queryKey: ['media', type, 'infinite', category, genreId, language],
+    queryFn: async ({ pageParam = 1 }) => {
+      if (genreId) {
+        return fetchByGenre(type, genreId, language, pageParam)
+      }
+      switch (category) {
+        case 'trending':
+          return fetchTrending(type, 'week', language) // Fixed 20-item feed
+        case 'top-rated':
+          return fetchTopRated(type, pageParam, language)
+        case 'new-releases':
+          return fetchNewReleases(type, pageParam, language)
+        case 'popular':
+        default:
+          return fetchPopular(type, pageParam, language)
+      }
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      // Trending feed is strictly top 20 items for the week; do not paginate
+      if (category === 'trending') {
+        return undefined
+      }
+      if (lastPage?.page && lastPage.page < lastPage.total_pages) {
+        return lastPage.page + 1
+      }
+      return undefined
+    },
     staleTime: 5 * 60 * 1000,
   })
 }

@@ -47,7 +47,9 @@
     "in": "in",
     "seeAll": "See All",
     "now": "now",
-    "backToDiscover": "Back to Discover"
+    "backToDiscover": "Back to Discover",
+    "loadMore": "Load More",
+    "loadingMore": "Loading more..."
   },
   "footer": {
     "description": "Your ultimate cinematic companion for discovering trending movies, TV shows, and curating your personal watchlist.",
@@ -135,5 +137,32 @@
     "sortTitleAsc": "Title (A–Z)",
     "sortTitleDesc": "Title (Z–A)",
     "itemsCount": "{{count}} titles"
+  },
+  "rating": {
+    "rateTitle": "Rate this title",
+    "yourRating": "Your Rating",
+    "notRated": "Not rated yet",
+    "stars": "stars",
+    "star": "star",
+    "clear": "Clear rating",
+    "rateScore": "Rate {{score}} out of 10"
+  },
+  "comments": {
+    "title": "Discussion & Reviews",
+    "yourComment": "Your Review & Comment",
+    "writePlaceholder": "Share your thoughts, impressions, or review about this title...",
+    "send": "Post Comment",
+    "update": "Update",
+    "delete": "Delete",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "noComments": "No reviews yet. Be the first to share your thoughts!",
+    "userReview": "Your Review",
+    "you": "You",
+    "edited": "Edited",
+    "justNow": "Just now",
+    "deleteConfirm": "Are you sure you want to remove your comment?",
+    "rateFirstNotice": "Select a rating (1-10) with your review",
+    "emptyError": "Please write a comment before posting"
   }
 }

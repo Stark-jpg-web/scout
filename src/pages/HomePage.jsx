@@ -62,7 +62,7 @@ function HomePage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-4xl font-bold tracking-tight text-foreground">
-            {t('app.name')} 
+            {t('app.name')}
           </h1>
           <p className="text-base text-muted">{t('app.tagline')}</p>
         </div>

@@ -26,6 +26,7 @@ import RatingBadge from '../components/ui/RatingBadge.jsx'
 import FavoriteBadge from '../components/ui/FavoriteBadge.jsx'
 import Watchlist from '../components/ui/Watchlist.jsx'
 import VideoModal from '../components/ui/VideoModal.jsx'
+import CommentsSection from '../components/library/CommentsSection.jsx'
 import CastCrewRow from '../components/media/CastCrewRow.jsx'
 import MediaCarousel from '../components/media/MediaCarousel.jsx'
 
@@ -269,6 +270,10 @@ function MediaDetailsPage() {
             </div>
           </div>
 
+          {/* Interactive User Star Rating & Comments Section */}
+          <div className="pt-2 max-w-xl">
+            <CommentsSection media={media} />
+          </div>
           {/* Overview Synopsis */}
           <div className="space-y-2 pt-2">
             <h2 className="text-base sm:text-lg font-bold text-foreground">

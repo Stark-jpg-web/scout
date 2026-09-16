@@ -1,15 +1,12 @@
 import { useParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import useStore from '../store/useStore.js'
-import {
-  useTrending,
-  usePopular,
-  useTopRated,
-  useNewReleases,
-  useByGenre,
-} from '../hooks/useMovies.js'
+import { useInfiniteCategory } from '../hooks/useMovies.js'
 import { CURATED_GENRES } from '../utils/constants.js'
 import MediaGrid from '../components/media/MediaGrid.jsx'
+import MediaCardSkeleton from '../components/media/MediaCardSkeleton.jsx'
+import { FaSpinner } from 'react-icons/fa'
+import { useEffect, useRef } from 'react'
 
 function CategoryPage() {
   const { category, id } = useParams()
@@ -32,41 +29,57 @@ function CategoryPage() {
       : matchedGenre.movieId
     : id
 
-  // Server state queries
-  const trending = useTrending(mediaType)
-  const popular = usePopular(mediaType)
-  const topRated = useTopRated(mediaType)
-  const newReleases = useNewReleases(mediaType)
-  const byGenre = useByGenre(mediaType, resolvedGenreId)
-
-  let activeQuery = trending
+  // Determine Title & Badge Variant based on Route
   let title = `${t('media.trending')} ${t('general.now')}`
   let badgeVariant = 'trending'
 
   if (matchedGenre) {
-    activeQuery = byGenre
     title = t(matchedGenre.labelKey)
     badgeVariant = matchedGenre.badgeVariant
   } else if (isGenre) {
-    activeQuery = byGenre
     title = t('navigation.genres')
     badgeVariant = 'genres'
   } else if (category === 'popular') {
-    activeQuery = popular
     title = `${t('media.popular')} ${t('general.now')}`
     badgeVariant = 'popular'
   } else if (category === 'top-rated') {
-    activeQuery = topRated
     title = t('media.top_rated')
     badgeVariant = 'top_rated'
   } else if (category === 'new-releases') {
-    activeQuery = newReleases
     title = t('media.new_releases')
     badgeVariant = 'new_releases'
   }
 
-  const items = activeQuery.data?.results || []
-  const totalCount = activeQuery.data?.total_results
+  // Single active infinite query
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteCategory(mediaType, category, resolvedGenreId)
+
+  // Deduplicate items by ID if any API edge cases occur
+  const allItems = data?.pages
+    ? Array.from(
+        new Map(
+          data.pages.flatMap((page) => page.results || []).map((m) => [m.id, m])
+        ).values()
+      )
+    : []
+
+  const totalCount = data?.pages?.[0]?.total_results
+
+  // Sentinel observer for vertical scroll
+  const observerRef = useRef(null)
+  useEffect(() => {
+    if (!observerRef.current || !hasNextPage || isFetchingNextPage) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage()
+        }
+      },
+      { rootMargin: '400px' } // Pre-fetch 400px before reaching the bottom
+    )
+    observer.observe(observerRef.current)
+    return () => observer.disconnect()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   return (
     <div className="space-y-6">
@@ -101,11 +114,32 @@ function CategoryPage() {
 
       {/* Full-Screen Responsive Grid */}
       <MediaGrid
-        items={items}
-        isLoading={activeQuery.isLoading}
+        items={allItems}
+        isLoading={isLoading}
         skeletonCount={18}
         badgeVariant={badgeVariant}
       />
+
+      {/* Skeletons while fetching next page */}
+      {isFetchingNextPage && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 pt-4">
+          {Array.from({ length: 18 }).map((_, i) => (
+            <MediaCardSkeleton key={i} />
+          ))}
+        </div>
+      )}
+
+      {/* Bottom Loading / Load More */}
+      {hasNextPage && (
+        <div ref={observerRef} className="flex justify-center py-6">
+          <button
+            type="button"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="min-w-[200px] px-6 py-2.5 rounded-xl bg-surface border border-border/60 hover:border-primary/50 text-foreground font-semibold text-sm transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+          ></button>
+        </div>
+      )}
     </div>
   )
 }

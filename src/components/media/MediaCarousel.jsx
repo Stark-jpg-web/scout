@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -16,17 +16,20 @@ function MediaCarousel({
   isLoading = false,
   seeAllLink,
   badgeVariant,
+  onCardClick,
+  fetchNextPage,
+  hasNextPage = false,
+  isFetchingNextPage = false,
 }) {
   const { t } = useTranslation()
   const scrollRef = useRef(null)
+  const horizontalSentinelRef = useRef(null)
   const isRTL = document.documentElement.dir === 'rtl'
+
   // Smooth scroll handler with bidirectional (LTR & RTL) support
   const handleScroll = (direction) => {
     if (!scrollRef.current) return
-    const isRTL = document.documentElement.dir === 'rtl'
-
     const scrollDistance = scrollRef.current.clientWidth * 0.6
-    // In RTL, standard browsers invert horizontal scroll coordinates
     const scrollDelta =
       direction === 'next'
         ? isRTL
@@ -40,8 +43,37 @@ function MediaCarousel({
       behavior: 'smooth',
     })
   }
+
+  // Horizontal Intersection Observer for progressive infinite loading
+  useEffect(() => {
+    if (
+      !horizontalSentinelRef.current ||
+      !hasNextPage ||
+      isFetchingNextPage ||
+      !fetchNextPage
+    ) {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage()
+        }
+      },
+      {
+        root: scrollRef.current,
+        rootMargin: '250px',
+      }
+    )
+
+    observer.observe(horizontalSentinelRef.current)
+    return () => observer.disconnect()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+
   return (
     <section className="relative flex flex-col space-y-3 w-full py-2">
+      {/* 1. Header Bar */}
       <div className="flex items-center justify-between px-1">
         {seeAllLink ? (
           <Link
@@ -53,42 +85,54 @@ function MediaCarousel({
               {t('general.seeAll')}
             </span>
             {isRTL ? (
-              <FaArrowLeft className="text-lg  group-hover:translate-x-1 text-primary/70" />
+              <FaArrowLeft className="text-lg group-hover:-translate-x-1 text-primary/70 transition-transform" />
             ) : (
-              <FaArrowRight className="text-lg  group-hover:translate-x-1 text-primary/70" />
+              <FaArrowRight className="text-lg group-hover:translate-x-1 text-primary/70 transition-transform" />
             )}
           </Link>
         ) : (
-          <div className="group inline-flex  items-center justify-center gap-2  font-bold text-foreground hover:text-primary transition-colors duration-200">
-            <h2 className="text-lg scale-y-120 sm:text-xl font-bold text-foreground">
+          <div className="group inline-flex items-center gap-2 font-bold text-foreground">
+            <h2 className="text-lg sm:text-xl font-bold text-foreground">
               {title}
             </h2>
-            <FaArrowRight className="text-xl text-primary/70" />
           </div>
         )}
-        <div className="flex  items-center gap-4">
-          <button className="carousel-btn" onClick={() => handleScroll('prev')}>
+
+        {/* Navigation Chevrons */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="carousel-btn"
+            onClick={() => handleScroll('prev')}
+            aria-label="Previous items"
+          >
             {isRTL ? (
-              <FaChevronRight className="text-center text-xl text-primary/70 " />
+              <FaChevronRight className="text-lg text-primary/70" />
             ) : (
-              <FaChevronLeft className="text-center text-xl text-primary/70 " />
+              <FaChevronLeft className="text-lg text-primary/70" />
             )}
           </button>
-          <button className="carousel-btn" onClick={() => handleScroll('next')}>
+          <button
+            type="button"
+            className="carousel-btn"
+            onClick={() => handleScroll('next')}
+            aria-label="Next items"
+          >
             {isRTL ? (
-              <FaChevronLeft className="text-center text-xl text-primary/70 rounded-md  " />
+              <FaChevronLeft className="text-lg text-primary/70" />
             ) : (
-              <FaChevronRight className="text-center text-xl text-primary/70 rounded-md  " />
+              <FaChevronRight className="text-lg text-primary/70" />
             )}
           </button>
         </div>
       </div>
-      {/* 2. Scroll Track: Strict Zero-CLS Layout */}
+
+      {/* 2. Scroll Track: Zero-CLS Layout */}
       <div
         ref={scrollRef}
         className="flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 pt-1 px-1 scroll-smooth"
       >
-        {isLoading
+        {isLoading && items.length === 0
           ? Array.from({ length: 7 }).map((_, index) => (
               <div
                 key={index}
@@ -110,8 +154,28 @@ function MediaCarousel({
                 />
               </div>
             ))}
+
+        {/* Horizontal Sentinel & Loading Indicator */}
+        {hasNextPage && fetchNextPage && (
+          <div
+            ref={horizontalSentinelRef}
+            className="flex items-center gap-3 shrink-0 snap-start"
+          >
+            {isFetchingNextPage && (
+              <>
+                <div className="w-36 sm:w-44 md:w-52 shrink-0">
+                  <MediaCardSkeleton />
+                </div>
+                <div className="w-36 sm:w-44 md:w-52 shrink-0">
+                  <MediaCardSkeleton />
+                </div>
+              </>
+            )}
+          </div>
+        )}
       </div>
     </section>
   )
 }
+
 export default MediaCarousel

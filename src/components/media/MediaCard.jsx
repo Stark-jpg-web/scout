@@ -43,7 +43,7 @@ function MediaCard({ media, onClick, badgeVariant = 'trending' }) {
       onKeyDown={handleKeyDown}
       role="button"
       tabIndex={0}
-      className="media-card-container  w-36 sm:w-44 md:w-52 shrink-0 flex flex-col group gap-3 cursor-pointer select-none rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary  bg-surface p-2.5"
+      className="media-card w-36 sm:w-44 md:w-52 shrink-0 flex flex-col group gap-3 cursor-pointer select-none rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary  bg-surface p-2.5"
     >
       <div className="media-card-canvas relative aspect-[2/3] w-full rounded-xl overflow-hidden bg-surface-muted border border-border/40 shadow-sm transition-all duration-300 group-hover:scale-103 group-hover:shadow-xl group-hover:border-primary/50">
         <img
