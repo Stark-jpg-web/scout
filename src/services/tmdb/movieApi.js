@@ -34,7 +34,6 @@ export async function apiFetch(endpoint, params = {}) {
   }
 
   const data = await response.json()
-  console.log('API DATA: ', data)
   return data
 }
 

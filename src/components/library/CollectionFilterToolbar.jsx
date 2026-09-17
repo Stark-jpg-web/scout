@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { MdFilterListAlt } from 'react-icons/md'
 
-import { FaSearch, FaTimes, FaSortAmountDown } from 'react-icons/fa'
+import { FaSearch, FaTimes } from 'react-icons/fa'
 function CollectionFilterToolbar({
   mediaType = 'all',
   onMediaTypeChange,
@@ -76,7 +76,7 @@ function CollectionFilterToolbar({
           />
           {searchQuery && (
             <button
-              type="input"
+              type="button"
               onClick={() => onSearchChange?.('')}
               className="absolute end-2.5 top-1/2 -translate-y-1/2 text-muted hover:text-foreground p-1 transition-colors cursor-pointer"
               aria-label="Clear search"

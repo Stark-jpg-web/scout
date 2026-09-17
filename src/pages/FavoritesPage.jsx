@@ -40,23 +40,9 @@ function FavoritesPage() {
         const genreIds = new Set(
           [genreDef.movieId, genreDef.tvId].filter(Boolean)
         )
-        console.log(
-          '[DEBUG] genreIds:',
-          [...genreIds],
-          'types:',
-          [...genreIds].map((x) => typeof x)
-        )
         list = list.filter((item) => {
           const itemGenres =
             item.genre_ids || item.genres?.map((g) => g.id) || []
-          console.log(
-            '[DEBUG] item',
-            item.title,
-            'itemGenres:',
-            JSON.stringify(itemGenres),
-            'types:',
-            itemGenres.map((x) => typeof x)
-          )
           return itemGenres.some((id) => genreIds.has(id))
         })
       }

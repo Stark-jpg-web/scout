@@ -6,6 +6,7 @@ import { useSearchMedia } from '../hooks/useMovies.js'
 import { useDebounce } from '../hooks/useDebounce.js'
 import { CURATED_GENRES } from '../utils/constants.js'
 import MediaGrid from '../components/media/MediaGrid.jsx'
+import MediaTypeSwitcher from '../components/ui/MediaTypeSwitcher.jsx'
 import { FaSearch } from 'react-icons/fa'
 
 function SearchPage() {
@@ -17,7 +18,6 @@ function SearchPage() {
   const debouncedQuery = useDebounce(inputQuery, 400)
 
   const mediaType = useStore((state) => state.mediaType)
-  const toggleMediaType = useStore((state) => state.toggleMediaType)
 
   // Sync debounced search with URL parameters
   useEffect(() => {
@@ -63,27 +63,8 @@ function SearchPage() {
           </div>
 
           {/* Media Type Switcher Tabs */}
-          <div className="inline-flex rounded-xl bg-surface p-1 border border-border/50">
-            <button
-              onClick={() => mediaType !== 'movie' && toggleMediaType()}
-              className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                mediaType === 'movie'
-                  ? 'bg-primary text-primary-foreground shadow'
-                  : 'text-muted hover:text-foreground'
-              }`}
-            >
-              {t('media.movies')}
-            </button>
-            <button
-              onClick={() => mediaType !== 'tv' && toggleMediaType()}
-              className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                mediaType === 'tv'
-                  ? 'bg-primary text-primary-foreground shadow'
-                  : 'text-muted hover:text-foreground'
-              }`}
-            >
-              {t('media.shows')}
-            </button>
+          <div>
+            <MediaTypeSwitcher />
           </div>
         </div>
 

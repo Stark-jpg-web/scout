@@ -48,10 +48,11 @@ export const mediaKeys = {
     language,
     page,
   ],
-  search: (type = 'movie', query, language) => [
+  search: (type = 'movie', query = '', page = 1, language = 'en-US') => [
     ...mediaKeys.type(type),
     'search',
     query.trim(),
+    page,
     language,
   ],
   detail: (type = 'movie', id, language = 'en-US') => [
@@ -97,7 +98,7 @@ export function useNewReleases(type = 'movie') {
     queryFn: () => fetchNewReleases(type, 1, language),
   })
 }
-export function useGenres(type = 'movie', genreId = 16) {
+export function useGenres(type = 'movie') {
   const language = useCurrentLanguage()
   return useQuery({
     queryKey: mediaKeys.genres(type, language),

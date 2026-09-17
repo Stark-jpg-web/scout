@@ -11,7 +11,7 @@ import useStore from '../store/useStore.js'
 import MediaCardSkeleton from '../components/media/MediaCardSkeleton.jsx'
 import MediaCarousel from '../components/media/MediaCarousel.jsx'
 import HeroBanner from '../components/media/HeroBanner.jsx'
-import { FaSearch } from 'react-icons/fa'
+import MediaTypeSwitcher from '../components/ui/MediaTypeSwitcher.jsx'
 
 function GenreCarouselSection({ genre, mediaType }) {
   const { t } = useTranslation()
@@ -65,6 +65,9 @@ function HomePage() {
             {t('app.name')}
           </h1>
           <p className="text-base text-muted">{t('app.tagline')}</p>
+        </div>
+        <div>
+          <MediaTypeSwitcher />
         </div>
       </div>
 

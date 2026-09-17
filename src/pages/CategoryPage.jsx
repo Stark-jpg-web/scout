@@ -5,6 +5,7 @@ import { useInfiniteCategory } from '../hooks/useMovies.js'
 import { CURATED_GENRES } from '../utils/constants.js'
 import MediaGrid from '../components/media/MediaGrid.jsx'
 import MediaCardSkeleton from '../components/media/MediaCardSkeleton.jsx'
+import MediaTypeSwitcher from '../components/ui/MediaTypeSwitcher.jsx'
 import { FaSpinner } from 'react-icons/fa'
 import { useEffect, useRef } from 'react'
 
@@ -110,6 +111,9 @@ function CategoryPage() {
           </div>
           <p className="text-sm text-muted">{t('app.tagline')}</p>
         </div>
+        <div>
+          <MediaTypeSwitcher />
+        </div>
       </div>
 
       {/* Full-Screen Responsive Grid */}
@@ -137,7 +141,16 @@ function CategoryPage() {
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
             className="min-w-[200px] px-6 py-2.5 rounded-xl bg-surface border border-border/60 hover:border-primary/50 text-foreground font-semibold text-sm transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
-          ></button>
+          >
+            {isFetchingNextPage ? (
+              <>
+                <FaSpinner className="animate-spin text-primary" />
+                <span>{t('general.loadingMore')}</span>
+              </>
+            ) : (
+              <span>{t('general.loadMore')}</span>
+            )}
+          </button>
         </div>
       )}
     </div>

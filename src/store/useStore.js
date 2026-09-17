@@ -1,4 +1,3 @@
-import { normalizeModuleId } from 'vite/module-runner'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
@@ -164,9 +163,8 @@ export const useStore = create(
                   },
                 }
               }
-              if (state.ratings[media.id]) {
-                return { comments: next, ratings: state.ratings }
-              }
+
+              return { comments: next, ratings: nextRatings }
             },
             false,
             'setComments'

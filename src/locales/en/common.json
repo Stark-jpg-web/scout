@@ -32,6 +32,15 @@
     "switchToLight": "Switch to light mode",
     "switchToDark": "Switch to dark mode"
   },
+  "settings": {
+    "title": "Preferences",
+    "theme": "Appearance",
+    "themeDark": "Dark",
+    "themeLight": "Light",
+    "language": "Language",
+    "english": "English",
+    "arabic": "العربية"
+  },
   "navigation": {
     "mainLabel": "Home",
     "discover": "Discover",

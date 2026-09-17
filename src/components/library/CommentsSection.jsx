@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   FaStar,
@@ -28,18 +28,17 @@ export default function CommentsSection({
     removeComment,
   } = useLibrary(media)
 
-  const [hoveredScore, setHoveredScore] = useState(null)
+  const [prevMediaId, setPrevMediaId] = useState(media?.id)
   const [commentText, setCommentText] = useState(comment || '')
   const [isEditing, setIsEditing] = useState(false)
+  const [hoveredScore, setHoveredScore] = useState(null)
 
-  // Synchronize local input state when store comment updates
-  useEffect(() => {
-    if (comment) {
-      setCommentText(comment)
-    } else {
-      setCommentText('')
-    }
-  }, [comment])
+  // Reset local form state when navigating between different media items
+  if (media?.id !== prevMediaId) {
+    setPrevMediaId(media?.id)
+    setCommentText(comment || '')
+    setIsEditing(false)
+  }
 
   const activeScore = hoveredScore !== null ? hoveredScore : rating
 

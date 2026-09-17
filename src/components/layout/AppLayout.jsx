@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import Footer from './Footer'
 
 function AppLayout() {
-  const { theme } = useStore()
+  const theme = useStore((state) => state.theme)
 
   useEffect(() => {
     document.documentElement.classList.toggle('light', theme === 'light')

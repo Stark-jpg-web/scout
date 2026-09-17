@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import useStore from '../store/useStore'
 import { mediaKeys } from './useMovies'
@@ -62,31 +63,33 @@ export function useHydratedLibrary(items = []) {
     })),
   })
 
-  return (items || []).map((item, index) => {
-    const liveData = queries[index]?.data
-    if (!liveData) return item
+  return useMemo(() => {
+    return (items || []).map((item, index) => {
+      const liveData = queries[index]?.data
+      if (!liveData) return item
 
-    return {
-      ...item,
-      title:
-        liveData.title ||
-        liveData.name ||
-        liveData.original_title ||
-        liveData.original_name ||
-        item.title,
-      overview: liveData.overview || item.overview,
-      poster_path: liveData.poster_path || item.poster_path,
-      backdrop_path: liveData.backdrop_path || item.backdrop_path,
-      vote_average: liveData.vote_average ?? item.vote_average,
-      release_date:
-        liveData.release_date || liveData.first_air_date || item.release_date,
-      genre_ids:
-        liveData.genres?.map((g) => g.id) ||
-        liveData.genre_ids ||
-        item.genre_ids ||
-        [],
-    }
-  })
+      return {
+        ...item,
+        title:
+          liveData.title ||
+          liveData.name ||
+          liveData.original_title ||
+          liveData.original_name ||
+          item.title,
+        overview: liveData.overview || item.overview,
+        poster_path: liveData.poster_path || item.poster_path,
+        backdrop_path: liveData.backdrop_path || item.backdrop_path,
+        vote_average: liveData.vote_average ?? item.vote_average,
+        release_date:
+          liveData.release_date || liveData.first_air_date || item.release_date,
+        genre_ids:
+          liveData.genres?.map((g) => g.id) ||
+          liveData.genre_ids ||
+          item.genre_ids ||
+          [],
+      }
+    })
+  }, [items, queries])
 }
 
 export default useLibrary

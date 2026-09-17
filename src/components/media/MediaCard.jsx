@@ -27,8 +27,8 @@ function MediaCard({ media, onClick, badgeVariant = 'trending' }) {
   const mediaType = media.title !== undefined ? 'movie' : 'tv'
 
   const handleClick = (e) => {
-    navigate(`/${mediaType}/${media.id}`)
-  }
+      navigate(`/${mediaType}/${media.id}`)
+    }
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {

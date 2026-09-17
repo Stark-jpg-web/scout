@@ -33,6 +33,15 @@
     "switchToLight": "التبديل إلى الوضع الفاتح",
     "switchToDark": "التبديل إلى الوضع الداكن"
   },
+  "settings": {
+    "title": "الإعدادات والتفضيلات",
+    "theme": "المظهر",
+    "themeDark": "الوضع الداكن",
+    "themeLight": "الوضع الفاتح",
+    "language": "اللغة",
+    "english": "English",
+    "arabic": "العربية"
+  },
   "navigation": {
     "mainLabel": "الرئيسية",
     "discover": "اكتشف",

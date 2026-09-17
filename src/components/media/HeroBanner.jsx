@@ -6,8 +6,11 @@ import RatingBadge from '../ui/RatingBadge.jsx'
 import { formatDate } from '../../utils/constants.js'
 import FavoriteBadge from '../ui/FavoriteBadge.jsx'
 import Watchlist from '../ui/Watchlist.jsx'
-function HeroBanner({ media, isLoading = false, onFavoriteClick }) {
+import useLibrary from '../../hooks/useLibrary.js'
+
+function HeroBanner({ media, isLoading = false }) {
   const { t } = useTranslation()
+  const { isFavorite, toggleFavorite } = useLibrary(media)
 
   if (isLoading) {
     return (
@@ -86,11 +89,19 @@ function HeroBanner({ media, isLoading = false, onFavoriteClick }) {
 
           <button
             type="button"
-            onClick={() => onFavoriteClick?.(media)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface/80 hover:bg-surface border border-border text-foreground transition-colors shadow-sm text-sm cursor-pointer"
+            onClick={toggleFavorite}
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border transition-all duration-200 shadow-sm text-sm cursor-pointer ${
+              isFavorite
+                ? 'bg-surface-elevated border-accent/60 text-accent font-semibold'
+                : 'bg-surface/80 hover:bg-surface border-border text-foreground'
+            }`}
           >
-            <FaHeart className="text-accent text-sm" />
-            <span>{t('media.addToFavorites')}</span>
+            <FaHeart className={isFavorite ? 'text-accent' : 'text-accent/80'} />
+            <span>
+              {isFavorite
+                ? t('favorites.title', 'Favorited')
+                : t('media.addToFavorites', 'Add to Favorites')}
+            </span>
           </button>
         </div>
       </div>

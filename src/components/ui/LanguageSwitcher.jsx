@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 function LanguageBtn() {
   const { i18n, t } = useTranslation()
   const currentLang = i18n.resolvedLanguage || i18n.language || 'en'
-  console.log(currentLang)
   return (
     <div
       className="flex justify-center gap-2"
