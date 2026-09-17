@@ -8,12 +8,12 @@ import {
 } from '../hooks/useMovies.js'
 import { CURATED_GENRES } from '../utils/constants.js'
 import useStore from '../store/useStore.js'
-import MediaCardSkeleton from '../components/media/MediaCardSkeleton.jsx'
 import MediaCarousel from '../components/media/MediaCarousel.jsx'
 import HeroBanner from '../components/media/HeroBanner.jsx'
 import MediaTypeSwitcher from '../components/ui/MediaTypeSwitcher.jsx'
+import { useNavigate } from 'react-router-dom'
 
-function GenreCarouselSection({ genre, mediaType }) {
+function GenreCarouselSection({ genre, mediaType, onClick }) {
   const { t } = useTranslation()
   const genreId = mediaType === 'tv' ? genre.tvId : genre.movieId
   const { data, isLoading } = useByGenre(mediaType, genreId)
@@ -25,25 +25,29 @@ function GenreCarouselSection({ genre, mediaType }) {
       isLoading={isLoading}
       seeAllLink={`/discover/${genre.key}`}
       badgeVariant={genre.badgeVariant}
+      onCardClick={onClick}
     />
   )
 }
 
 function HomePage() {
+  const navigate = useNavigate()
   const { t } = useTranslation()
   const mediaType = useStore((state) => state.mediaType)
+
+  function openMediaDetail(media) {
+    const type =
+      media.media_type ||
+      (media.title !== undefined ? 'movie' : 'tv') ||
+      mediaType
+    navigate(`/${type}/${media.id}`)
+  }
 
   // Primary Discovery Queries
   const trending = useTrending(mediaType)
   const topRated = useTopRated(mediaType)
   const popular = usePopular(mediaType)
   const newReleases = useNewReleases(mediaType)
-
-  const isLoading =
-    trending.isLoading ||
-    topRated.isLoading ||
-    popular.isLoading ||
-    newReleases.isLoading
 
   const isError =
     trending.isError ||
@@ -71,15 +75,6 @@ function HomePage() {
         </div>
       </div>
 
-      {/* Loading Skeleton */}
-      {isLoading && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <MediaCardSkeleton key={i} />
-          ))}
-        </div>
-      )}
-
       {/* Error State */}
       {isError && (
         <div className="p-4 rounded-xl bg-accent/10 border border-accent/20 text-accent">
@@ -97,6 +92,7 @@ function HomePage() {
         isLoading={trending.isLoading}
         seeAllLink="/discover/trending"
         badgeVariant="trending"
+        onCardClick={openMediaDetail}
       />
       <MediaCarousel
         title={t('media.popular') + ' ' + t('general.now')}
@@ -104,6 +100,7 @@ function HomePage() {
         isLoading={popular.isLoading}
         seeAllLink="/discover/popular"
         badgeVariant="popular"
+        onCardClick={openMediaDetail}
       />
       <MediaCarousel
         title={t('media.top_rated')}
@@ -111,6 +108,7 @@ function HomePage() {
         isLoading={topRated.isLoading}
         seeAllLink="/discover/top-rated"
         badgeVariant="top_rated"
+        onCardClick={openMediaDetail}
       />
       <MediaCarousel
         title={t('media.new_releases')}
@@ -118,15 +116,20 @@ function HomePage() {
         isLoading={newReleases.isLoading}
         seeAllLink="/discover/new-releases"
         badgeVariant="new_releases"
+        onCardClick={openMediaDetail}
       />
 
-      {CURATED_GENRES.map((genre) => (
-        <GenreCarouselSection
-          key={genre.key}
-          genre={genre}
-          mediaType={mediaType}
-        />
-      ))}
+      {/* Curated Genre Carousels */}
+      <div id="genres" className="space-y-6 scroll-mt-24">
+        {CURATED_GENRES.map((genre) => (
+          <GenreCarouselSection
+            key={genre.key}
+            genre={genre}
+            mediaType={mediaType}
+            onClick={openMediaDetail}
+          />
+        ))}
+      </div>
     </div>
   )
 }

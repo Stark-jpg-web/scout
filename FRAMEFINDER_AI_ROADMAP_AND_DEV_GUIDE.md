@@ -476,69 +476,77 @@ To guarantee high velocity, clean architecture, and rock-solid performance, Fram
   - 100% accessible (ARIA labels, keyboard focus) and fully localized (English LTR & Arabic RTL).
 - **Zero-CLS Performance**: Fixed `aspect-[2/3]` image containers, DOM containment (`content-visibility: auto`), image lazy loading, TanStack Query caching.
 
-### 🌐 Phase 2: v2.0 — Full-Stack MERN Community Hub (Future Milestone)
+### 🌐 Phase 2: v2.0 — Full-Stack MERN Community Hub (Milestones & Roadmap)
+
+#### 🔔 Milestone 2.1: Cinematic Notification & Real-Time Alert Engine (Phase 2 Genesis)
+
+The notification system serves as the sensory nervous system connecting user actions, community social interactions, and TMDB media updates. It is implemented in two cohesive layers:
+
+##### Layer 1: Client-Side Interactive Toast Engine (Immediate UX Feedback)
+- **Zustand Toast Dispatcher**: `useNotificationStore` managing an active queue of animated toast cards (`{ id, type: 'success' | 'info' | 'warning' | 'accent', title, message, action: { label, onClick }, duration = 4000 }`).
+- **Triggered Events**:
+  - **Favorites & Watchlist**: Immediate feedback when toggling items, complete with an interactive **"Undo"** action button.
+  - **Film Journal & Ratings**: Confirms when a 1–10 star rating or comment is published, updated, or removed.
+  - **Clipboard & Sharing**: Notifies when trailer links or movie recommendations are copied to the clipboard.
+  - **Connection State**: Live online/offline toast notifications alerting users when network connectivity changes.
+- **Cinematic Visual Styling**:
+  - Warm obsidian backdrop (`bg-surface-elevated/95`), gold metallic borders (`border-primary/40`), subtle backdrop blur (`backdrop-blur-md`), and glowing status icon.
+  - Bi-directional support: Automatically anchors to `bottom-end` (bottom-right in LTR, bottom-left in RTL) with smooth spring transitions.
+  - Accessible via `role="status"` and `aria-live="polite"`.
+
+##### Layer 2: Full-Stack Real-Time Notification Center (Navbar Bell & Community Hub)
+- **In-App Notification Bell 🔔 in Navbar**:
+  - Situated next to the Settings Popover with an animated pulsing badge counter displaying unread notifications.
+  - Opens a luxury popover flyout panel with tabs:
+    1. **All**: Chronological stream of all alerts.
+    2. **Social**: Direct replies to user comments, likes/reactions on reviews, mentions.
+    3. **Watchlist Radar**: Premiere date alerts, new official YouTube trailers added, streaming release alerts.
+  - Quick actions: "Mark all as read", swipe-to-dismiss, and single-click navigation to the target movie or comment thread.
+- **Real-Time WebSockets / Socket.IO Integration**:
+  - Backend emits `notification:new` events over authenticated WebSockets directly to the recipient's personal room (`user:${userId}`).
+  - Instant badge increment without page refresh or periodic polling.
+- **MongoDB Notification Data Model**:
+  ```javascript
+  const NotificationSchema = new mongoose.Schema({
+    recipientId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    type: { 
+      type: String, 
+      enum: ['reply', 'reaction', 'watchlist_release', 'new_trailer', 'system'],
+      required: true 
+    },
+    mediaId: { type: Number, required: true },
+    mediaType: { type: String, enum: ['movie', 'tv'], default: 'movie' },
+    commentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Comment', default: null },
+    title: { type: String, required: true },
+    message: { type: String, required: true },
+    isRead: { type: Boolean, default: false, index: true },
+    metadata: {
+      posterPath: String,
+      releaseDate: String,
+      rating: Number,
+      reactionType: String
+    }
+  }, { timestamps: true })
+  ```
+- **Opt-in Web Push Notifications**: Optional Service Worker integration for browser push notifications when a watchlisted movie hits theaters or digital streaming.
+
+---
+
+#### 🗄️ Milestone 2.2: Full-Stack MERN Architecture & Community Persistence
 
 - **Recommended Database**: **MongoDB** (MongoDB Atlas cloud cluster + **Mongoose ODM**).
   - _Why MongoDB for MERN?_ Flexible JSON document model matches TMDB API responses perfectly, enables embedding comments/reviews without complex SQL migrations, and integrates seamlessly with Express and Node.js.
-- **Backend API**: Node.js + Express REST API (or tRPC).
-- **Authentication**: JWT authentication with bcrypt password hashing and secure HTTP-only cookies (Register, Login, Protected Routes).
+- **Backend API**: Node.js + Express REST API (or tRPC) with JWT cookie authentication.
 - **Hybrid Online/Offline Strategy**:
   - **Client-Side LocalStorage**: Local theme preference, UI states, draft inputs, and query caching for instant rendering.
   - **Cloud MongoDB**: User accounts, synced personal collections across devices, **public reviews & community comments**, and **community like/dislike upvotes** on reviews.
-- **Community Social Feed**: View other users' ratings, read public reviews on movie pages, and like/dislike community comments.
-- **Database-Synced Community Comments & Reviews** _(Phase 2 — Cloud Migration)_:
+- **Community Social Feed & Reviews**:
   - **Local-to-Cloud Migration**: Phase 1 localStorage comments are synced to MongoDB upon user authentication. Existing local comments are pushed to the cloud as the user's first reviews.
   - **Public Comment Visibility**: All authenticated users' comments and reviews are visible on the movie/show detail page, creating a community discussion hub.
   - **Threaded Reply System**: Users can **reply** to other users' comments, creating nested conversation threads. Reply schema: `{ parentCommentId, userId, text, createdAt }`.
-  - **Reactions System**: Users can **react** to comments with emojis or like/dislike upvotes. Supported reactions: 👍 Like, 👎 Dislike, ❤️ Love, 😂 Funny, 😮 Surprised. Each user can only react once per comment (toggle on/off). Reaction counts displayed inline on each comment.
-  - **Comment Moderation**: Edit and delete own comments. Report inappropriate comments. Admin moderation dashboard (future).
-  - **Mongoose Schema Design**:
-    ```javascript
-    // Comment Schema
-    {
-      _id: ObjectId,
-      mediaId: Number,           // TMDB movie/show ID
-      mediaType: 'movie' | 'tv',
-      userId: ObjectId,          // ref: 'User'
-      parentCommentId: ObjectId | null, // null = top-level, ObjectId = reply
-      text: String,
-      rating: Number | null,     // optional 1-10 personal rating
-      reactions: {
-        like: [ObjectId],        // array of userIds
-        dislike: [ObjectId],
-        love: [ObjectId],
-        funny: [ObjectId],
-        surprised: [ObjectId],
-      },
-      createdAt: Date,
-      updatedAt: Date,
-    }
-    ```
-- **🔔 Notification System** _(Phase 2)_:
-  - **Real-Time Notifications**: Users receive notifications when:
-    - Someone **replies** to their comment or review.
-    - Someone **reacts** (like/love/etc.) to their comment.
-    - A movie in their **watchlist** gets a new trailer or release update.
-    - A new **community review** is posted on a movie they've reviewed.
-  - **Notification Delivery Channels**:
-    - **In-App Notification Bell** 🔔: Badge counter on the navbar bell icon, dropdown panel showing recent notifications with read/unread states.
-    - **Real-Time Updates**: Socket.IO or Server-Sent Events (SSE) for instant push notifications without page refresh.
-    - **Email Notifications** _(optional)_: Digest emails for important activity (configurable in user settings).
-  - **Notification Schema**:
-    ```javascript
-    {
-      _id: ObjectId,
-      recipientId: ObjectId,     // user receiving the notification
-      senderId: ObjectId,        // user who triggered it
-      type: 'reply' | 'reaction' | 'watchlist_update' | 'new_review',
-      mediaId: Number,           // related TMDB media ID
-      commentId: ObjectId | null,
-      message: String,           // pre-rendered notification text
-      isRead: Boolean,
-      createdAt: Date,
-    }
-    ```
-  - **User Notification Preferences**: Configurable settings for which notification types to receive (in-app, email, or both). Mute notifications per media title.
+  - **Reactions System**: Users can **react** to comments with emojis or like/dislike upvotes (👍 Like, 👎 Dislike, ❤️ Love, 😂 Funny, 😮 Surprised).
+  - **Comment Moderation**: Edit and delete own comments. Report inappropriate comments. Admin moderation dashboard.
 
 ---
 

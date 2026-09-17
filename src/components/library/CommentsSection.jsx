@@ -46,8 +46,10 @@ export default function CommentsSection({
     e?.preventDefault()
     if (!commentText.trim()) return
 
-    setComments(commentText.trim(), rating)
-    setIsEditing(false)
+    if (rating > 0 || commentData?.score > 0) {
+      setComments(commentText.trim(), rating)
+      setIsEditing(false)
+    }
   }
 
   const handleDelete = () => {
@@ -96,7 +98,10 @@ export default function CommentsSection({
                 {t('rating.rateTitle', 'Rate & Review')}
               </h3>
               <p className="text-[11px] text-muted mt-0.5">
-                {t('comments.rateFirstNotice', 'Select a rating (1-10) with your review')}
+                {t(
+                  'comments.rateFirstNotice',
+                  'Select a rating (1-10) with your review'
+                )}
               </p>
             </div>
           </div>
@@ -106,7 +111,9 @@ export default function CommentsSection({
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/15 border border-primary/30">
                 <span className="text-xs font-bold font-mono text-primary">
                   {rating}
-                  <span className="text-[10px] text-primary/70 font-normal">/10</span>
+                  <span className="text-[10px] text-primary/70 font-normal">
+                    /10
+                  </span>
                 </span>
                 <button
                   type="button"
@@ -200,7 +207,9 @@ export default function CommentsSection({
             )}
             <button
               type="submit"
-              disabled={!commentText.trim()}
+              disabled={
+                !commentText.trim() || rating <= 0 || commentData?.score <= 0
+              }
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-primary text-primary-foreground shadow-md hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 cursor-pointer"
             >
               <FaPaperPlane className="text-[10px]" />
@@ -230,7 +239,9 @@ export default function CommentsSection({
                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-foreground/80 hover:text-primary bg-surface-elevated/60 hover:bg-surface-elevated border border-border/40 transition-colors cursor-pointer"
               >
                 <FaEdit className="text-[11px]" />
-                <span className="text-[11px]">{t('comments.edit', 'Edit')}</span>
+                <span className="text-[11px]">
+                  {t('comments.edit', 'Edit')}
+                </span>
               </button>
               <button
                 type="button"
@@ -239,7 +250,9 @@ export default function CommentsSection({
                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-accent hover:bg-accent/10 border border-border/40 transition-colors cursor-pointer"
               >
                 <FaTrashAlt className="text-[11px]" />
-                <span className="text-[11px]">{t('comments.delete', 'Delete')}</span>
+                <span className="text-[11px]">
+                  {t('comments.delete', 'Delete')}
+                </span>
               </button>
             </div>
           </div>

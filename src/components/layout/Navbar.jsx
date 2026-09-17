@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { FaSun, FaMoon, FaGlobe, FaFilm } from 'react-icons/fa'
+import { FaSun, FaMoon, FaGlobe } from 'react-icons/fa'
+import BrandLogo from '../ui/BrandLogo'
 import SettingsDropdown from '../ui/SettingsDropdown'
 import useStore from '../../store/useStore'
 
@@ -52,22 +53,33 @@ function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-surface/90 backdrop-blur-xl shadow-sm">
-      <div className="mx-auto flex min-h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className=" flex min-h-[72px]  items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left Side: Brand Logo & Navigation */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center  gap-8">
           <Link
             to="/"
-            className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-foreground transition-all hover:text-primary group"
+            onClick={() => {
+              if (window.location.pathname === '/') {
+                window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+              }
+            }}
+            className="inline-flex items-center gap-3 group"
+            aria-label="Scout"
           >
-            <FaFilm className="text-primary text-xl group-hover:scale-110 transition-transform duration-300" />
-            <span className="bg-gradient-to-r from-primary via-[#f3d999] to-primary bg-clip-text text-transparent font-black">
-              {t('app.name')}
-            </span>
+            <BrandLogo size="default " />
+            <div className="flex flex-col justify-center">
+              <h1 className="text-xl  sm:text-3xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors leading-tight">
+                {t('app.name')}
+              </h1>
+              <span className="text-[10px] sm:text-[11px] text-muted font-medium leading-tight">
+                {t('app.tagline')}
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation Links */}
           <nav
-            className="hidden md:flex items-center gap-1.5"
+            className="hidden md:flex md:items-center  gap-1.5"
             aria-label={t('navigation.mainLabel')}
           >
             {navLinks.map((link) => (

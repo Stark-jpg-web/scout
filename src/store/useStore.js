@@ -259,7 +259,7 @@ export const useStore = create(
         }),
       }
     ),
-    { name: 'FrameFinderStore' }
+    { name: 'ScoutStore' }
   )
 )
 

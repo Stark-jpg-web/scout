@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 260" fill="none">
+  <defs>
+    <linearGradient id="g-gold-den" x1="20%" y1="10%" x2="80%" y2="90%">
+      <stop offset="0%" stop-color="#FDF0C0"/>
+      <stop offset="30%" stop-color="#E8C46A"/>
+      <stop offset="60%" stop-color="#C99A2E"/>
+      <stop offset="100%" stop-color="#7A5410"/>
+    </linearGradient>
+    <linearGradient id="g-rim-den" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFEEA0"/>
+      <stop offset="50%" stop-color="#D4A030"/>
+      <stop offset="100%" stop-color="#5C3C08"/>
+    </linearGradient>
+    <radialGradient id="g-hub-den" cx="38%" cy="38%" r="62%">
+      <stop offset="0%" stop-color="#FFF8E8"/>
+      <stop offset="40%" stop-color="#D4A030"/>
+      <stop offset="100%" stop-color="#6B4510"/>
+    </radialGradient>
+    <radialGradient id="g-lens-den" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#4A4040"/>
+      <stop offset="60%" stop-color="#1A1210"/>
+      <stop offset="100%" stop-color="#0A0806"/>
+    </radialGradient>
+    <filter id="f-shadow-den">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity="0.55"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#C99A2E" flood-opacity="0.25"/>
+    </filter>
+    <filter id="f-txt-den">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="220" height="260" rx="20" fill="#141010"/>
+
+  <!-- ── MARK ── -->
+  <g filter="url(#f-shadow-den)" transform="translate(110,108)">
+    <!-- Outer Rim -->
+    <circle r="88" stroke="url(#g-rim-den)" stroke-width="4" fill="#1A1210"/>
+    <!-- Inner body -->
+    <circle r="83" fill="url(#g-gold-den)"/>
+    <!-- 6 Aperture Blades -->
+    <path d="M0,-52 C28,-48 52,-28 52,0 L32,18 C14,2 -2,-16 -18,-36 Z" fill="#1A1210" opacity="0.92"/>
+    <path d="M52,0 C50,28 28,50 0,52 L-16,30 C4,16 20,0 32,-18 Z" fill="#1A1210" opacity="0.92"/>
+    <path d="M0,52 C-28,50 -52,28 -52,0 L-30,-18 C-14,-2 2,18 18,36 Z" fill="#1A1210" opacity="0.92"/>
+    <path d="M-52,0 C-48,-28 -28,-52 0,-52 L18,-30 C-2,-18 -20,0 -32,18 Z" fill="#1A1210" opacity="0.92"/>
+    <path d="M0,-52 C-28,-48 -52,-28 -52,0 L-30,16 C-12,2 6,-14 22,-32 Z" fill="#1A1210" opacity="0.7"/>
+    <path d="M52,0 C48,28 28,52 0,52 L16,28 C2,12 -14,-4 -32,-22 Z" fill="#1A1210" opacity="0.7"/>
+    <!-- Lens bowl -->
+    <circle r="36" fill="url(#g-lens-den)" stroke="#3A2A1A" stroke-width="1.5"/>
+    <!-- Compass star spokes -->
+    <line x1="0" y1="-28" x2="0" y2="28" stroke="url(#g-gold-den)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-28" y1="0" x2="28" y2="0" stroke="url(#g-gold-den)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-20" y1="-20" x2="20" y2="20" stroke="url(#g-gold-den)" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/>
+    <line x1="20" y1="-20" x2="-20" y2="20" stroke="url(#g-gold-den)" stroke-width="1.4" stroke-linecap="round" opacity="0.85"/>
+    <!-- Compass diamonds -->
+    <polygon points="0,-28 4,-20 0,-12 -4,-20" fill="url(#g-gold-den)"/>
+    <polygon points="28,0 20,4 12,0 20,-4" fill="url(#g-gold-den)"/>
+    <polygon points="0,28 4,20 0,12 -4,20" fill="url(#g-gold-den)"/>
+    <polygon points="-28,0 -20,4 -12,0 -20,-4" fill="url(#g-gold-den)"/>
+    <!-- Center hub -->
+    <circle r="7" fill="url(#g-hub-den)" stroke="#C99A2E" stroke-width="1"/>
+  </g>
+
+  <!-- ── WORDMARK: SCOUT ── -->
+  <text
+    x="110" y="210"
+    font-family="'Cairo', 'Helvetica Neue', Arial, sans-serif"
+    font-size="38" font-weight="900" letter-spacing="6"
+    text-anchor="middle" fill="url(#g-gold-den)"
+    filter="url(#f-txt-den)"
+  >SCOUT</text>
+
+  <!-- ── TAGLINE ── -->
+  <text
+    x="110" y="234"
+    font-family="'Cairo', 'Helvetica Neue', Arial, sans-serif"
+    font-size="9.5" font-weight="600" letter-spacing="2.5"
+    text-anchor="middle" fill="#C99A2E" opacity="0.9"
+  >DISCOVER YOUR NEXT OBSESSION</text>
+</svg>

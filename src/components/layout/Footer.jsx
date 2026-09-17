@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { FaFilm, FaFacebook, FaInstagram } from 'react-icons/fa'
+import { FaFacebook, FaInstagram } from 'react-icons/fa'
+import BrandLogo from '../ui/BrandLogo'
 
 const Footer = () => {
   const { t } = useTranslation()
@@ -11,9 +12,18 @@ const Footer = () => {
     Search: { to: '/search', label: t('navigation.search') },
     Watchlist: { to: '/watchlist', label: t('navigation.watchlist') },
     Favorites: { to: '/favorites', label: t('navigation.favorites') },
-    Genres: { to: '/genres', label: t('navigation.genres') },
-    About: { to: '/about', label: t('navigation.about') },
-    Contact: { to: '/contact', label: t('navigation.contact') },
+    Genres: { to: '/#genres', label: t('navigation.genres') },
+  }
+
+  const handleLinkClick = (to) => {
+    if (to === '/#genres') {
+      const el = document.getElementById('genres')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+        return
+      }
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
   }
 
   return (
@@ -32,13 +42,19 @@ const Footer = () => {
           <div className="space-y-4">
             <Link
               to="/"
-              className="inline-flex items-center gap-3 group"
-              aria-label={t('app.name')}
+              onClick={() => handleLinkClick('/')}
+              className="inline-flex items-center gap-3.5 group"
+              aria-label="Scout"
             >
-              <FaFilm className="text-3xl text-primary drop-shadow-[0_0_12px_rgba(215,168,71,0.6)] group-hover:scale-105 transition-transform duration-300" />
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#f3d999] to-primary">
-                FrameFinder
-              </h2>
+              <BrandLogo size="footer" />
+              <div className="flex flex-col justify-center">
+                <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors leading-tight">
+                  {t('app.name')}
+                </h1>
+                <span className="text-xs text-muted font-medium leading-tight">
+                  {t('app.tagline')}
+                </span>
+              </div>
             </Link>
             <p className="text-xs sm:text-sm text-muted leading-relaxed max-w-md">
               {t('footer.description')}
@@ -55,6 +71,7 @@ const Footer = () => {
                 <Link
                   key={link.label}
                   to={link.to}
+                  onClick={() => handleLinkClick(link.to)}
                   className="text-xs sm:text-sm text-muted hover:text-primary transition-all duration-200 hover:translate-x-1 rtl:hover:-translate-x-1 inline-block"
                 >
                   {link.label}
@@ -75,11 +92,12 @@ const Footer = () => {
           {/* Copyright & Legal Links */}
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1">
             <span>
-              © {currentYear} FrameFinder. {t('footer.rightsReserved')}
+              © {currentYear} Scout. {t('footer.rightsReserved')}
             </span>
             <span className="opacity-40">|</span>
             <Link
               to="/terms"
+              onClick={() => handleLinkClick('/terms')}
               className="hover:text-primary transition-colors underline-offset-4 hover:underline"
             >
               {t('footer.terms')}
@@ -87,6 +105,7 @@ const Footer = () => {
             <span className="opacity-40">•</span>
             <Link
               to="/privacy"
+              onClick={() => handleLinkClick('/privacy')}
               className="hover:text-primary transition-colors underline-offset-4 hover:underline"
             >
               {t('footer.privacy')}

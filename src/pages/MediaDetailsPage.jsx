@@ -45,10 +45,24 @@ function MediaDetailsPage() {
 
   const [isTrailerOpen, setTrailerOpen] = useState(false)
 
+  const title =
+    media?.title ||
+    media?.name ||
+    media?.original_title ||
+    media?.original_name ||
+    ''
+
   // Scroll to top whenever media ID changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [id, mediaType])
+
+  // Set dynamic document title for cinematic details
+  useEffect(() => {
+    if (title) {
+      document.title = `${title} — Scout`
+    }
+  }, [title])
 
   if (isLoading) {
     return (
@@ -90,12 +104,7 @@ function MediaDetailsPage() {
     )
   }
 
-  const title =
-    media.title ||
-    media.name ||
-    media.original_title ||
-    media.original_name ||
-    t('media.untitled')
+  const displayTitle = title || t('media.untitled')
 
   const releaseDateStr = media.release_date || media.first_air_date
   const formattedDate = formatFullDate(
@@ -161,7 +170,7 @@ function MediaDetailsPage() {
         {backdropUrl && (
           <img
             src={backdropUrl}
-            alt={title}
+            alt={displayTitle}
             className="absolute inset-0 w-full h-full object-cover object-top"
           />
         )}
@@ -188,7 +197,7 @@ function MediaDetailsPage() {
           <div className="relative w-48 sm:w-60 md:w-72 aspect-[2/3] rounded-2xl overflow-hidden bg-surface-elevated border border-border/60 shadow-2xl">
             <img
               src={posterUrl}
-              alt={title}
+              alt={displayTitle}
               className="w-full h-full object-cover"
               onError={(e) => {
                 e.currentTarget.src = FALLBACK_POSTER
@@ -238,7 +247,7 @@ function MediaDetailsPage() {
           {/* Title & Tagline */}
           <div className="space-y-1.5">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
-              {title}
+              {displayTitle}
             </h1>
             {media.tagline && (
               <p className="text-sm sm:text-base italic text-muted/90">
