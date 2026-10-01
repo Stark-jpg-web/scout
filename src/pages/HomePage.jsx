@@ -107,7 +107,7 @@ function HomePage() {
 
       {/* Trending Spotlight Showcase (#2 onwards) */}
       <TrendingSpotlight
-        items={trending.data?.results?.slice(1) || []}
+        items={trending.data?.results || []}
         isLoading={trending.isLoading}
         onCardClick={handleOpenMediaDetail}
       />

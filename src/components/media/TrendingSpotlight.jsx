@@ -23,11 +23,7 @@ import useLibrary from '../../hooks/useLibrary.js'
 
 const AUTOPLAY_DELAY_MS = 5500
 
-function TrendingSpotlight({
-  items = [],
-  isLoading = false,
-  onCardClick,
-}) {
+function TrendingSpotlight({ items = [], isLoading = false, onCardClick }) {
   const { t } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
@@ -143,7 +139,7 @@ function TrendingSpotlight({
   if (!items || items.length === 0) return null
 
   const currentMedia = items[currentIndex] || items[0]
-  const currentRank = currentIndex + 2 // Highlight starting from 2nd trending movie (#2, #3, ...)
+  const currentRank = currentIndex + 1 // Highlight starting from 2nd trending movie (#2, #3, ...)
 
   const title =
     currentMedia.title ||
@@ -407,7 +403,7 @@ function TrendingSpotlight({
                     : 'bg-surface-elevated text-muted'
                 }`}
               >
-                #{idx + 2}
+                #{idx + 1}
               </span>
               <span className="max-w-[70px] sm:max-w-[110px] truncate text-[11px] sm:text-xs">
                 {thumbTitle}
