@@ -10,6 +10,7 @@ import { CURATED_GENRES, openMediaDetail } from '../utils/constants.js'
 import useStore from '../store/useStore.js'
 import MediaCarousel from '../components/media/MediaCarousel.jsx'
 import HeroBanner from '../components/media/HeroBanner.jsx'
+import TrendingSpotlight from '../components/media/TrendingSpotlight.jsx'
 import MediaTypeSwitcher from '../components/ui/MediaTypeSwitcher.jsx'
 import { useNavigate } from 'react-router-dom'
 
@@ -55,7 +56,7 @@ function HomePage() {
     trending.error || topRated.error || popular.error || newReleases.error
 
   const heroItem = trending.data?.results?.[0]
-  console.log(trending.data)
+
   return (
     <div className="space-y-6">
       {/* Header & Controls */}
@@ -79,7 +80,14 @@ function HomePage() {
       )}
 
       {/* Live Spotlight Hero */}
-      <HeroBanner media={heroItem} isLoading={trending.isLoading} />
+      {/* <HeroBanner media={heroItem} isLoading={trending.isLoading} /> */}
+
+      {/* Trending Spotlight Showcase (#2 onwards) */}
+      <TrendingSpotlight
+        items={trending.data?.results?.slice(1) || []}
+        isLoading={trending.isLoading}
+        onCardClick={handleOpenMediaDetail}
+      />
 
       {/* 4 Primary Discovery Carousels */}
       <MediaCarousel
@@ -90,6 +98,9 @@ function HomePage() {
         badgeVariant="trending"
         onCardClick={handleOpenMediaDetail}
       />
+
+      {/* Trending Spotlight Showcase (#2 onwards) */}
+
       <MediaCarousel
         title={t('media.popular') + ' ' + t('general.now')}
         items={popular.data?.results || []}

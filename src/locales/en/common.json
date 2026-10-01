@@ -23,7 +23,12 @@
     "minute": "m",
     "trailer": "Trailer",
     "noTrailer": "No trailer available",
-    "close": "Close"
+    "close": "Close",
+    "trendingSpotlight": "Trending Spotlight",
+    "trendingSpotlightSubtitle": "Top trending titles buzzing right now",
+    "pauseAutoplay": "Pause autoplay",
+    "resumeAutoplay": "Resume autoplay",
+    "slideProgress": "Slide {{current}} of {{total}}"
   },
   "language": {
     "selectorLabel": "Language selector"

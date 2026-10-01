@@ -24,7 +24,12 @@
     "minute": "د",
     "trailer": "إعلان",
     "noTrailer": "لا يوجد إعلان متاح",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "trendingSpotlight": "أبرز الأعمال الرائجة",
+    "trendingSpotlightSubtitle": "الأعمال الأكثر رواجاً وشعبية الآن",
+    "pauseAutoplay": "إيقاف التشغيل التلقائي",
+    "resumeAutoplay": "استئناف التشغيل التلقائي",
+    "slideProgress": "شريحة {{current}} من {{total}}"
   },
   "language": {
     "selectorLabel": "محدد اللغة"
