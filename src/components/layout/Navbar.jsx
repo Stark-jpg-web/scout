@@ -52,8 +52,8 @@ function Navbar() {
     }`
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-surface/90 backdrop-blur-xl shadow-sm">
-      <div className=" flex min-h-[72px]  items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-surface/90 backdrop-blur-xl shadow-2xl shadow-[inset_0_-1px_0_rgba(215,168,71,0.15),0_12px_30px_rgba(0,0,0,0.85)]">
+      <div className=" flex min-h-[72px]  items-center justify-between px-4 sm:px-6 lg:px-8 ">
         {/* Left Side: Brand Logo & Navigation */}
         <div className="flex items-center  gap-8">
           <Link
