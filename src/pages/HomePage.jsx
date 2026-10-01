@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useTrending,
@@ -16,18 +17,40 @@ import { useNavigate } from 'react-router-dom'
 
 function GenreCarouselSection({ genre, mediaType, onClick }) {
   const { t } = useTranslation()
+  const [isVisible, setIsVisible] = useState(false)
+  const containerRef = useRef(null)
+
+  useEffect(() => {
+    if (!containerRef.current || isVisible) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '350px' }
+    )
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [isVisible])
+
   const genreId = mediaType === 'tv' ? genre.tvId : genre.movieId
-  const { data, isLoading } = useByGenre(mediaType, genreId)
+  const { data, isLoading } = useByGenre(mediaType, genreId, {
+    enabled: isVisible,
+  })
 
   return (
-    <MediaCarousel
-      title={t(genre.labelKey)}
-      items={data?.results || []}
-      isLoading={isLoading}
-      seeAllLink={`/discover/${genre.key}`}
-      badgeVariant={genre.badgeVariant}
-      onCardClick={onClick}
-    />
+    <div ref={containerRef} className="min-h-[220px]">
+      <MediaCarousel
+        title={t(genre.labelKey)}
+        items={data?.results || []}
+        isLoading={isVisible ? isLoading : true}
+        seeAllLink={`/discover/${genre.key}`}
+        badgeVariant={genre.badgeVariant}
+        onCardClick={onClick}
+      />
+    </div>
   )
 }
 
@@ -80,7 +103,7 @@ function HomePage() {
       )}
 
       {/* Live Spotlight Hero */}
-      {/* <HeroBanner media={heroItem} isLoading={trending.isLoading} /> */}
+      <HeroBanner media={heroItem} isLoading={trending.isLoading} />
 
       {/* Trending Spotlight Showcase (#2 onwards) */}
       <TrendingSpotlight

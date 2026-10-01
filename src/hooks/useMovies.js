@@ -114,11 +114,12 @@ export function useGenres(type = 'movie') {
   })
 }
 
-export function useByGenre(type = 'movie', genreId = 16) {
+export function useByGenre(type = 'movie', genreId = 16, options = {}) {
   const language = useCurrentLanguage()
   return useQuery({
     queryKey: mediaKeys.byGenre(type, genreId, language, 1),
     queryFn: () => fetchByGenre(type, genreId, language, 1),
+    ...options,
   })
 }
 

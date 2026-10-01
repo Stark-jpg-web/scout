@@ -68,9 +68,9 @@ function Navbar() {
           >
             <BrandLogo size="default " />
             <div className="flex flex-col justify-center">
-              <h1 className="text-xl  sm:text-3xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors leading-tight">
+              <span className="text-xl sm:text-3xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors leading-tight">
                 {t('app.name')}
-              </h1>
+              </span>
               <span className="text-[10px] sm:text-[11px] text-muted font-medium leading-tight">
                 {t('app.tagline')}
               </span>

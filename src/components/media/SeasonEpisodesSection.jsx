@@ -127,10 +127,7 @@ function EpisodeCard({ episode, seasonPoster, onPlayEpisode }) {
             }`}
           >
             {episode.overview ||
-              t(
-                'media.noOverview',
-                'No overview available for this episode.'
-              )}
+              t('media.noOverview', 'No overview available for this episode.')}
           </p>
 
           {hasLongOverview && (
@@ -212,12 +209,12 @@ function SeasonEpisodesSection({ media }) {
     return media.seasons.filter(
       (s) => s.episode_count > 0 || media.seasons.length === 1
     )
-  }, [media?.seasons])
+  }, [media])
 
   // Default to Season 1, or first available season
   const [selectedSeasonNumber, setSelectedSeasonNumber] = useState(() => {
     const season1 = seasons.find((s) => s.season_number === 1)
-    return season1 ? season1.season_number : seasons[0]?.season_number ?? 1
+    return season1 ? season1.season_number : (seasons[0]?.season_number ?? 1)
   })
 
   const currentSeason = useMemo(() => {
@@ -275,7 +272,10 @@ function SeasonEpisodesSection({ media }) {
         return
       }
     } catch (e) {
-      console.warn('Could not load episode videos, falling back to show videos:', e)
+      console.warn(
+        'Could not load episode videos, falling back to show videos:',
+        e
+      )
     }
 
     // Fallback to show / season videos
@@ -306,9 +306,15 @@ function SeasonEpisodesSection({ media }) {
             </div>
             <div>
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
-                <span>{t('details.seasonsAndEpisodes', 'Seasons & Episodes')}</span>
+                <span>
+                  {t('details.seasonsAndEpisodes', 'Seasons & Episodes')}
+                </span>
                 <span className="text-muted text-sm transition-transform duration-200">
-                  {isOpen ? <FaChevronUp className="text-xs" /> : <FaChevronDown className="text-xs" />}
+                  {isOpen ? (
+                    <FaChevronUp className="text-xs" />
+                  ) : (
+                    <FaChevronDown className="text-xs" />
+                  )}
                 </span>
               </h2>
               <p className="text-xs sm:text-sm text-muted">

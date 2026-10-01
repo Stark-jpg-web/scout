@@ -48,9 +48,9 @@ const Footer = () => {
             >
               <BrandLogo size="footer" />
               <div className="flex flex-col justify-center">
-                <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors leading-tight">
+                <span className="text-xl sm:text-3xl font-extrabold tracking-tight text-foreground group-hover:text-primary transition-colors leading-tight">
                   {t('app.name')}
-                </h1>
+                </span>
                 <span className="text-xs text-muted font-medium leading-tight">
                   {t('app.tagline')}
                 </span>

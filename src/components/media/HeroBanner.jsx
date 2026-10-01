@@ -36,13 +36,21 @@ function HeroBanner({ media, isLoading = false }) {
         <FavoriteBadge media={media} />
         <Watchlist media={media} />
       </div>
-      {/* 1. Backdrop Image with High-Res Sizing */}
+      {/* 1. Backdrop Image with Responsive Sizing & High Priority for Mobile LCP */}
       {media.backdrop_path && (
-        <img
-          src={getImageUrl(media.backdrop_path, TMDB_IMAGE_SIZES.BACKDROP_LG)}
-          alt={title}
-          className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-103"
-        />
+        <picture className="absolute inset-0 w-full h-full pointer-events-none">
+          <source
+            media="(min-width: 640px)"
+            srcSet={getImageUrl(media.backdrop_path, TMDB_IMAGE_SIZES.BACKDROP_LG)}
+          />
+          <img
+            src={getImageUrl(media.backdrop_path, TMDB_IMAGE_SIZES.BACKDROP_SM)}
+            alt={title}
+            fetchPriority="high"
+            decoding="async"
+            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-103"
+          />
+        </picture>
       )}
 
       {/* 2. Cinematic Gradient Scrim (Bottom & Side Gradient) */}

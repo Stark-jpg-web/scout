@@ -21,20 +21,52 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="/logo.png" />
 
-    <!-- Google Fonts: Cairo -->
+    <!-- Preconnects for CDN & Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://image.tmdb.org" crossorigin />
+    <link rel="dns-prefetch" href="https://image.tmdb.org" />
+
+    <!-- Google Fonts: Cairo (Asynchronous Non-Blocking Load with Swap) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap"
+      />
+    </noscript>
 
     <!-- Brand Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Instant App Shell for Sub-Second First Paint (LCP Optimization) -->
+      <div style="min-height: 100vh; background-color: #171312; color: #f8f4ef; font-family: 'Cairo', system-ui, -apple-system, sans-serif;">
+        <header style="height: 72px; border-bottom: 1px solid #4b3c35; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; background: #2a2422;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #d7a847, #b13e50);"></div>
+            <div>
+              <span style="font-size: 1.5rem; font-weight: 800; color: #f8f4ef; display: block; line-height: 1.2;">Scout</span>
+            </div>
+          </div>
+        </header>
+        <main style="max-width: 80rem; margin: 0 auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+          <div style="height: 380px; border-radius: 1rem; background: #2a2422; border: 1px solid #4b3c35;"></div>
+        </main>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
