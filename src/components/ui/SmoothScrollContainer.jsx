@@ -18,7 +18,7 @@ export default function SmoothScrollContainer({ children, className = '' }) {
 
     // Configure smooth momentum-based physics
     const scrollbar = Scrollbar.init(containerRef.current, {
-      damping: 0.08,
+      damping: 0.05,
       thumbMinSize: 24,
       renderByPixels: true,
       alwaysShowTracks: false,
