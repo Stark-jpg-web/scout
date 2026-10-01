@@ -103,7 +103,7 @@ function HomePage() {
       )}
 
       {/* Live Spotlight Hero */}
-      <HeroBanner media={heroItem} isLoading={trending.isLoading} />
+      {/* <HeroBanner media={heroItem} isLoading={trending.isLoading} /> */}
 
       {/* Trending Spotlight Showcase (#2 onwards) */}
       <TrendingSpotlight
