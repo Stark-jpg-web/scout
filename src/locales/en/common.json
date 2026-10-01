@@ -105,7 +105,16 @@
     "recommendations": "More Like This",
     "back": "Back",
     "noCast": "No cast information available",
-    "noRecommendations": "No recommendations available"
+    "noRecommendations": "No recommendations available",
+    "seasonsAndEpisodes": "Seasons & Episodes",
+    "allSeasons": "All Seasons",
+    "season": "Season",
+    "episode": "Episode",
+    "episodesCount": "{{count}} Episodes",
+    "episodeNumber": "Episode {{number}}",
+    "ep": "EP",
+    "noEpisodesFound": "No episodes found for this season.",
+    "guestStars": "Guest Stars"
   },
   "watchlist": {
     "title": "Watchlist",

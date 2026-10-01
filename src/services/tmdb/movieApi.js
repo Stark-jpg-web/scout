@@ -43,28 +43,28 @@ async function fetchWithFallBack(endpoint, params = {}) {
   if (!language.startsWith('ar') || !data?.results) {
     return data
   }
-  const hasEmptyOverView = data.results.some(
-    (item) => !item?.overview || item.overview.trim() === ''
+  const hasIncompleteData = data.results.some(
+    (item) =>
+      !item?.overview?.trim() ||
+      (!item?.title?.trim() && !item?.name?.trim())
   )
-  if (hasEmptyOverView) {
+  if (hasIncompleteData) {
     try {
       const enData = await apiFetch(endpoint, { ...params, language: 'en-US' })
-      const enMap = new Map(enData.results.map((m) => [m.id, m]))
+      const enMap = new Map(enData.results?.map((m) => [m.id, m]) || [])
       data.results = data.results.map((item) => {
         const enItem = enMap.get(item.id)
         return {
           ...item,
           // If Arabic title is missing, use English
-          title: item.title || enItem?.title || item.original_title,
-          name: item.name || enItem?.name || item.original_name,
-          // If Arabic overview is missing, use English overview!
-          overview: item.overview?.trim()
-            ? item.overview
-            : enItem?.overview || '',
+          title: item.title?.trim() || enItem?.title || item.original_title || '',
+          name: item.name?.trim() || enItem?.name || item.original_name || '',
+          // If Arabic overview is missing, use English overview
+          overview: item.overview?.trim() ? item.overview : enItem?.overview || '',
         }
       })
     } catch (err) {
-      console.warn('English overview fallback failed:', err)
+      console.warn('English list fallback failed:', err)
     }
   }
   return data
@@ -133,6 +133,7 @@ export function searchMedia(
     include_adult: false,
   })
 }
+
 export async function fetchMediaDetails(
   type = 'movie',
   id,
@@ -141,7 +142,7 @@ export async function fetchMediaDetails(
   if (!id) {
     throw new Error('Media ID is required.')
   }
-  const data = await fetchWithFallBack(`/${type}/${id}`, {
+  const data = await apiFetch(`/${type}/${id}`, {
     language,
     append_to_response: 'videos,credits,recommendations,similar',
     include_video_language: 'en,null,ar',
@@ -151,28 +152,158 @@ export async function fetchMediaDetails(
     ? data.videos
     : data.videos?.results || []
 
-  if (
-    language.startsWith('ar') &&
-    (!data.overview?.trim() ||
-      !data.tagline?.trim() ||
-      rawVideos.length === 0)
-  ) {
+  if (language.startsWith('ar')) {
     try {
       const enData = await apiFetch(`/${type}/${id}`, {
         language: 'en-US',
         append_to_response: 'videos,credits,recommendations,similar',
         include_video_language: 'en,null',
       })
+
       if (!data.overview?.trim()) data.overview = enData.overview || ''
       if (!data.tagline?.trim()) data.tagline = enData.tagline || ''
+      if (!data.title?.trim() && enData.title) data.title = enData.title
+      if (!data.name?.trim() && enData.name) data.name = enData.name
+
       if (rawVideos.length === 0 && enData.videos?.results?.length) {
         rawVideos = enData.videos.results
       }
+
+      // Fallback for seasons list
+      if (data.seasons && enData.seasons) {
+        const enSeasonMap = new Map(enData.seasons.map((s) => [s.id, s]))
+        data.seasons = data.seasons.map((s) => {
+          const enS = enSeasonMap.get(s.id)
+          return {
+            ...s,
+            name: s.name?.trim() || enS?.name || `Season ${s.season_number}`,
+            overview: s.overview?.trim() ? s.overview : enS?.overview || '',
+          }
+        })
+      }
+
+      // Fallback for recommendations
+      if (data.recommendations?.results && enData.recommendations?.results) {
+        const enRecMap = new Map(
+          enData.recommendations.results.map((r) => [r.id, r])
+        )
+        data.recommendations.results = data.recommendations.results.map((r) => {
+          const enR = enRecMap.get(r.id)
+          return {
+            ...r,
+            title: r.title?.trim() || enR?.title || r.original_title || '',
+            name: r.name?.trim() || enR?.name || r.original_name || '',
+            overview: r.overview?.trim() ? r.overview : enR?.overview || '',
+          }
+        })
+      }
+
+      // Fallback for similar media
+      if (data.similar?.results && enData.similar?.results) {
+        const enSimMap = new Map(enData.similar.results.map((r) => [r.id, r]))
+        data.similar.results = data.similar.results.map((r) => {
+          const enR = enSimMap.get(r.id)
+          return {
+            ...r,
+            title: r.title?.trim() || enR?.title || r.original_title || '',
+            name: r.name?.trim() || enR?.name || r.original_name || '',
+            overview: r.overview?.trim() ? r.overview : enR?.overview || '',
+          }
+        })
+      }
     } catch (err) {
-      console.warn('English details fallback has failed:', err)
+      console.warn('English details fallback failed:', err)
     }
   }
 
   data.videos = rawVideos
   return data
 }
+
+export async function fetchTvSeason(
+  tvId,
+  seasonNumber = 1,
+  language = 'en-US'
+) {
+  if (!tvId || seasonNumber === undefined || seasonNumber === null) {
+    throw new Error('TV ID and Season Number are required.')
+  }
+  const data = await apiFetch(`/tv/${tvId}/season/${seasonNumber}`, {
+    language,
+  })
+
+  // Comprehensive fallback for Arabic to English
+  if (language.startsWith('ar')) {
+    try {
+      const enData = await apiFetch(`/tv/${tvId}/season/${seasonNumber}`, {
+        language: 'en-US',
+      })
+
+      // Season-level fallback
+      if (!data.overview?.trim()) data.overview = enData.overview || ''
+      if (!data.name?.trim())
+        data.name = enData.name || `Season ${seasonNumber}`
+
+      // Episode-level fallback
+      if (data?.episodes && enData?.episodes) {
+        const enMap = new Map(enData.episodes.map((ep) => [ep.id, ep]))
+        data.episodes = data.episodes.map((ep) => {
+          const enEp = enMap.get(ep.id)
+          const arName = ep.name?.trim()
+          const enName = enEp?.name?.trim()
+
+          // If Arabic title is missing, fallback to English
+          const finalName = arName || enName || `Episode ${ep.episode_number}`
+
+          return {
+            ...ep,
+            name: finalName,
+            overview: ep.overview?.trim() ? ep.overview : enEp?.overview || '',
+          }
+        })
+      }
+    } catch (err) {
+      console.warn('English season episodes fallback failed:', err)
+    }
+  }
+
+  return data
+}
+
+export async function fetchEpisodeVideos(
+  tvId,
+  seasonNumber,
+  episodeNumber,
+  language = 'en-US'
+) {
+  if (
+    !tvId ||
+    seasonNumber === undefined ||
+    episodeNumber === undefined
+  ) {
+    return { results: [] }
+  }
+  try {
+    const data = await apiFetch(
+      `/tv/${tvId}/season/${seasonNumber}/episode/${episodeNumber}/videos`,
+      { language }
+    )
+    if (
+      (!data?.results || data.results.length === 0) &&
+      language !== 'en-US'
+    ) {
+      const enData = await apiFetch(
+        `/tv/${tvId}/season/${seasonNumber}/episode/${episodeNumber}/videos`,
+        { language: 'en-US' }
+      )
+      if (enData?.results?.length > 0) {
+        return enData
+      }
+    }
+    return data || { results: [] }
+  } catch (err) {
+    console.warn('Episode videos fetch error:', err)
+    return { results: [] }
+  }
+}
+

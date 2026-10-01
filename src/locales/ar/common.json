@@ -106,7 +106,16 @@
     "recommendations": "أعمال مشابهة",
     "back": "رجوع",
     "noCast": "لا تتوفر معلومات عن طاقم التمثيل",
-    "noRecommendations": "لا تتوفر توصيات مشابهة"
+    "noRecommendations": "لا تتوفر توصيات مشابهة",
+    "seasonsAndEpisodes": "المواسم والحلقات",
+    "allSeasons": "كل المواسم",
+    "season": "الموسم",
+    "episode": "الحلقة",
+    "episodesCount": "{{count}} حلقات",
+    "episodeNumber": "الحلقة {{number}}",
+    "ep": "حلقة",
+    "noEpisodesFound": "لم يتم العثور على حلقات لهذا الموسم.",
+    "guestStars": "ضيوف الشرف"
   },
   "watchlist": {
     "title": "قائمة المشاهدة",

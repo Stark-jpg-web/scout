@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
 function VideoModal({ isOpen, onClose, videos = [], title }) {
@@ -46,9 +47,10 @@ function VideoModal({ isOpen, onClose, videos = [], title }) {
   if (!isOpen) return null
 
   const youtubeKey = trailer?.key
-  return (
+
+  const modalContent = (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -95,6 +97,10 @@ function VideoModal({ isOpen, onClose, videos = [], title }) {
       </div>
     </div>
   )
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalContent, document.body)
+    : modalContent
 }
 
 export default VideoModal

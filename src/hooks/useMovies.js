@@ -9,6 +9,7 @@ import {
   fetchGenres,
   searchMedia,
   fetchMediaDetails,
+  fetchTvSeason,
 } from '../services/tmdb/movieApi'
 import { useCurrentLanguage } from '../utils/constants.js'
 
@@ -59,6 +60,13 @@ export const mediaKeys = {
     ...mediaKeys.type(type),
     'detail',
     id,
+    language,
+  ],
+  season: (tvId, seasonNumber, language = 'en-US') => [
+    'tv',
+    tvId,
+    'season',
+    seasonNumber,
     language,
   ],
 }
@@ -167,6 +175,18 @@ export function useInfiniteCategory(type = 'movie', category = 'popular', genreI
       }
       return undefined
     },
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useTvSeason(tvId, seasonNumber = 1) {
+  const language = useCurrentLanguage()
+  return useQuery({
+    queryKey: mediaKeys.season(tvId, seasonNumber, language),
+    queryFn: () => fetchTvSeason(tvId, seasonNumber, language),
+    enabled: Boolean(
+      tvId && seasonNumber !== undefined && seasonNumber !== null
+    ),
     staleTime: 5 * 60 * 1000,
   })
 }

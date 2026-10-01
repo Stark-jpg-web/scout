@@ -55,7 +55,7 @@ function HomePage() {
     trending.error || topRated.error || popular.error || newReleases.error
 
   const heroItem = trending.data?.results?.[0]
-
+  console.log(trending.data)
   return (
     <div className="space-y-6">
       {/* Header & Controls */}

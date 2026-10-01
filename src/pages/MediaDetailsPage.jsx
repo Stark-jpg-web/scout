@@ -30,6 +30,8 @@ import VideoModal from '../components/ui/VideoModal.jsx'
 import CommentsSection from '../components/library/CommentsSection.jsx'
 import CastCrewRow from '../components/media/CastCrewRow.jsx'
 import MediaCarousel from '../components/media/MediaCarousel.jsx'
+import SeasonEpisodesSection from '../components/media/SeasonEpisodesSection.jsx'
+import ProductionCompaniesSection from '../components/media/ProductionCompaniesSection.jsx'
 
 function MediaDetailsPage() {
   const { mediaType = 'movie', id } = useParams()
@@ -55,6 +57,7 @@ function MediaDetailsPage() {
     media?.original_title ||
     media?.original_name ||
     ''
+  console.log('API data:', media)
 
   // Scroll to top whenever media ID changes
   useEffect(() => {
@@ -153,7 +156,7 @@ function MediaDetailsPage() {
       : media.similar?.results?.length > 0
         ? media.similar.results
         : []
-  console.log(recommendations)
+
   const videoList = Array.isArray(media.videos)
     ? media.videos
     : media.videos?.results || []
@@ -394,7 +397,12 @@ function MediaDetailsPage() {
         </div>
       </div>
 
-      {/* 4. Top Cast Snap-Scrolling Row */}
+      {/* 4. TV Show Seasons & Episodes Section */}
+      {mediaType === 'tv' && media.seasons?.length > 0 && (
+        <SeasonEpisodesSection media={media} />
+      )}
+
+      {/* 5. Top Cast Snap-Scrolling Row */}
       {castMembers.length > 0 && (
         <CastCrewRow title={t('details.cast')} members={castMembers} />
       )}
@@ -408,7 +416,16 @@ function MediaDetailsPage() {
         />
       )}
 
-      {/* 6. Recommendations / More Like This Carousel */}
+      {/* 6. Production Companies & Networks */}
+      {(media.production_companies?.length > 0 ||
+        media.networks?.length > 0) && (
+        <ProductionCompaniesSection
+          companies={media.production_companies}
+          networks={media.networks}
+        />
+      )}
+
+      {/* 7. Recommendations / More Like This Carousel */}
       {recommendations.length > 0 && (
         <MediaCarousel
           title={t('details.recommendations')}
