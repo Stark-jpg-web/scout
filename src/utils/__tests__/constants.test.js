@@ -8,6 +8,7 @@ import {
   formatCurrency,
   formatFullDate,
   badgeStyles,
+  openMediaDetail,
 } from '../constants.js'
 
 describe('constants and formatting utilities', () => {
@@ -90,6 +91,44 @@ describe('constants and formatting utilities', () => {
 
     it('returns default primary badge style for unknown type', () => {
       expect(badgeStyles('unknown_variant')).toContain('bg-primary/20')
+    })
+  })
+
+  describe('openMediaDetail', () => {
+    it('navigates to media route with media_type if present', () => {
+      let navigatedTo = null
+      const mockNavigate = (path) => {
+        navigatedTo = path
+      }
+      openMediaDetail(mockNavigate, { id: 101, media_type: 'movie' })
+      expect(navigatedTo).toBe('/movie/101')
+    })
+
+    it('infers movie if media.title is defined', () => {
+      let navigatedTo = null
+      const mockNavigate = (path) => {
+        navigatedTo = path
+      }
+      openMediaDetail(mockNavigate, { id: 202, title: 'Inception' })
+      expect(navigatedTo).toBe('/movie/202')
+    })
+
+    it('infers tv if title is undefined', () => {
+      let navigatedTo = null
+      const mockNavigate = (path) => {
+        navigatedTo = path
+      }
+      openMediaDetail(mockNavigate, { id: 303, name: 'Loki' })
+      expect(navigatedTo).toBe('/tv/303')
+    })
+
+    it('supports (media, navigate) parameter order', () => {
+      let navigatedTo = null
+      const mockNavigate = (path) => {
+        navigatedTo = path
+      }
+      openMediaDetail({ id: 404, media_type: 'tv' }, mockNavigate)
+      expect(navigatedTo).toBe('/tv/404')
     })
   })
 })

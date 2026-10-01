@@ -168,7 +168,6 @@ export const CURATED_GENRES = [
   },
 ]
 
-
 export function badgeStyles(type) {
   return (
     BADGE_CONFIGS[type]?.className ||
@@ -181,24 +180,24 @@ export function formatRunTime(minutes, t) {
   }
   const hours = Math.floor(minutes / 60)
   const remainingMinutes = minutes % 60
-  if(hours===0){
+  if (hours === 0) {
     return `${remainingMinutes}${t('media.minute')}`
   }
-  if(remainingMinutes===0){
+  if (remainingMinutes === 0) {
     return `${hours}${t('media.hour')}`
   }
 
   return `${hours}${t('media.hour')} ${remainingMinutes}${t('media.minute')}`
 }
 
-export function formatCurrency(amount){
-  if(!amount || amount===0){
-    return "N/A"
+export function formatCurrency(amount) {
+  if (!amount || amount === 0) {
+    return 'N/A'
   }
-  return new Intl.NumberFormat('en-US',{
-    style:'currency',
-    currency:'USD',
-    minimumFractionDigits:0
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
   }).format(amount)
 }
 
@@ -215,4 +214,29 @@ export function formatFullDate(dateStr, locale = 'en-US') {
     month: 'long',
     day: 'numeric',
   }).format(date)
+}
+
+export function openMediaDetail(
+  navigateOrMedia,
+  mediaOrNavigate,
+  defaultMediaType
+) {
+  let navigate, media, fallbackType
+  if (typeof navigateOrMedia === 'function') {
+    navigate = navigateOrMedia
+    media = mediaOrNavigate
+    fallbackType = defaultMediaType
+  } else {
+    media = navigateOrMedia
+    navigate = mediaOrNavigate
+    fallbackType = defaultMediaType
+  }
+  if (!navigate || !media || !media.id) return
+
+  const type =
+    media.media_type ||
+    (media.title !== undefined ? 'movie' : 'tv') ||
+    fallbackType
+
+  navigate(`/${type}/${media.id}`)
 }

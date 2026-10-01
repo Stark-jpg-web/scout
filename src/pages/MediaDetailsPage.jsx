@@ -21,6 +21,7 @@ import {
   formatRunTime,
   formatCurrency,
   formatFullDate,
+  openMediaDetail,
 } from '../utils/constants.js'
 import RatingBadge from '../components/ui/RatingBadge.jsx'
 import FavoriteBadge from '../components/ui/FavoriteBadge.jsx'
@@ -43,6 +44,9 @@ function MediaDetailsPage() {
     error,
   } = useMediaDetails(mediaType, id)
 
+  const handleOpenMediaDetail = (targetMedia) => {
+    openMediaDetail(navigate, targetMedia, mediaType)
+  }
   const [isTrailerOpen, setTrailerOpen] = useState(false)
 
   const title =
@@ -149,7 +153,7 @@ function MediaDetailsPage() {
       : media.similar?.results?.length > 0
         ? media.similar.results
         : []
-
+  console.log(recommendations)
   const videoList = Array.isArray(media.videos)
     ? media.videos
     : media.videos?.results || []
@@ -409,6 +413,7 @@ function MediaDetailsPage() {
         <MediaCarousel
           title={t('details.recommendations')}
           items={recommendations}
+          onCardClick={handleOpenMediaDetail}
           badgeVariant=""
         />
       )}

@@ -6,7 +6,7 @@ import {
   useNewReleases,
   useByGenre,
 } from '../hooks/useMovies.js'
-import { CURATED_GENRES } from '../utils/constants.js'
+import { CURATED_GENRES, openMediaDetail } from '../utils/constants.js'
 import useStore from '../store/useStore.js'
 import MediaCarousel from '../components/media/MediaCarousel.jsx'
 import HeroBanner from '../components/media/HeroBanner.jsx'
@@ -35,12 +35,8 @@ function HomePage() {
   const { t } = useTranslation()
   const mediaType = useStore((state) => state.mediaType)
 
-  function openMediaDetail(media) {
-    const type =
-      media.media_type ||
-      (media.title !== undefined ? 'movie' : 'tv') ||
-      mediaType
-    navigate(`/${type}/${media.id}`)
+  const handleOpenMediaDetail = (media) => {
+    openMediaDetail(navigate, media, mediaType)
   }
 
   // Primary Discovery Queries
@@ -92,7 +88,7 @@ function HomePage() {
         isLoading={trending.isLoading}
         seeAllLink="/discover/trending"
         badgeVariant="trending"
-        onCardClick={openMediaDetail}
+        onCardClick={handleOpenMediaDetail}
       />
       <MediaCarousel
         title={t('media.popular') + ' ' + t('general.now')}
@@ -100,7 +96,7 @@ function HomePage() {
         isLoading={popular.isLoading}
         seeAllLink="/discover/popular"
         badgeVariant="popular"
-        onCardClick={openMediaDetail}
+        onCardClick={handleOpenMediaDetail}
       />
       <MediaCarousel
         title={t('media.top_rated')}
@@ -108,7 +104,7 @@ function HomePage() {
         isLoading={topRated.isLoading}
         seeAllLink="/discover/top-rated"
         badgeVariant="top_rated"
-        onCardClick={openMediaDetail}
+        onCardClick={handleOpenMediaDetail}
       />
       <MediaCarousel
         title={t('media.new_releases')}
@@ -116,7 +112,7 @@ function HomePage() {
         isLoading={newReleases.isLoading}
         seeAllLink="/discover/new-releases"
         badgeVariant="new_releases"
-        onCardClick={openMediaDetail}
+        onCardClick={handleOpenMediaDetail}
       />
 
       {/* Curated Genre Carousels */}
@@ -126,7 +122,7 @@ function HomePage() {
             key={genre.key}
             genre={genre}
             mediaType={mediaType}
-            onClick={openMediaDetail}
+            onClick={handleOpenMediaDetail}
           />
         ))}
       </div>

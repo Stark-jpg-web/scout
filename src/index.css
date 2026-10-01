@@ -116,3 +116,28 @@ select {
   content-visibility: auto;
   contain-intrinsic-size: 200px 300px;
 }
+
+/* Smooth Scrollbar Custom Styles */
+[data-scrollbar] {
+  display: block;
+  position: relative;
+}
+
+.scrollbar-track {
+  background: transparent !important;
+  z-index: 40 !important;
+}
+
+.scrollbar-track-y {
+  width: 8px !important;
+}
+
+.scrollbar-thumb {
+  background: color-mix(in srgb, var(--primary) 40%, transparent) !important;
+  border-radius: 9999px !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.scrollbar-thumb:hover {
+  background: var(--primary) !important;
+}
